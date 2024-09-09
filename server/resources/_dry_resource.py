@@ -31,6 +31,27 @@ class DRYResource(Resource):
             records = [record.to_dict() for record in self.model.query.all()]
             return records, 200
 
+      
+    def post(self):
+        """
+
+        """
+
+        try: 
+            record = g.record
+            if not record: 
+                raise valueError("Record not found in g.record")
+            json = request.get_json()
+            for attr in json:
+                print(f"Attrname: {attr}, Type: {type(json.get(attr))}")
+                setattr(record, attr, json.get(attr))
+            db.session.add(record)
+            db.session.commit()
+            return record.to_dict(), 201
+        except:
+            return {'error': 'Not Created'}, 404
+        
+
     def patch(self, id):
         """Updates a db.Model record with a given id.
 
